@@ -1,0 +1,22 @@
+input:focus{
+    outline: 2px solid #34a265;     /* oranges! yey */
+  }
+select:focus{
+    outline: 2px solid #34a265; 
+      /* oranges! yey */
+  }
+select {
+    appearance: none; /* Remove default arrow */
+    background: url('free-arrow-down-icon-3101-thumb.png') no-repeat right center;
+    background-size: 20px; /* Size of the custom arrow */
+    padding: 100px; /* Space for the custom arrow */
+}
+.loader {
+    width: 75px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 8px solid #78eead71;
+    border-right-color: #34a265;
+    animation: l2 1s infinite linear;
+  }
+  @keyframes l2 {to{transform: rotate(1turn)}}

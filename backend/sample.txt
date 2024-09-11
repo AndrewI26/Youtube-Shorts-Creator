@@ -1,0 +1,10 @@
+curl -X POST -F "subreddit=AITA" -F "video_file=/Users/andrewiammancini/Desktop/Coding/Reddit Shorts Automator/backend/script/short.mp4" -F "video_choice=subwaySurfers" -F "content=Lorem Impsum Hi there" -F "post_title=Why did I do this" -F "file_name=123" http://127.0.0.1:8000/shorts/create/
+
+curl -X POST "http://127.0.0.1:8000/shorts/create/" -H "Content-Type: application/json" -d '{
+    "subreddit": "AIT",
+    "post_title": "Why did I do th?",
+    "content": "Lorem Ipsu",
+    "file_name": "12",
+    "video_choice": "subwaySurfers"
+}'
+    

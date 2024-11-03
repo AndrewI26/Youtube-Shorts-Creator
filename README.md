@@ -8,7 +8,6 @@ This is the UI where users can input information about a reddit post:
 
 Once the information is inputed, a the request is sent to the backend, which creates the video. The backend creates the video and sends it back to the user to be displayed on screen.
 
-https://github.com/user-attachments/assets/78da60c8-6b9d-4f39-8874-1ef338d74a8e
 
-
+https://github.com/user-attachments/assets/7a6e3186-0be9-435b-a855-894af0dffcd8
 

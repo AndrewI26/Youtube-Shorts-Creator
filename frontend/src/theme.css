@@ -1,0 +1,45 @@
+/*
+ * Design tokens. Tailwind turns every variable here into utilities
+ * (e.g. --color-ink -> bg-ink / text-ink / border-ink, --radius-card -> rounded-card)
+ * and also exposes them as plain CSS variables (var(--color-ink)).
+ */
+@theme {
+  /* Only the palette below exists, so off-brand colours can't creep in. */
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --color-canvas: #f6f4f0;
+  --color-surface: #ffffff;
+  --color-surface-muted: #efece6;
+
+  --color-ink: #1a1a1a;
+  --color-ink-hover: #333333;
+  --color-ink-muted: #6b6762;
+  --color-ink-faint: #9a958e;
+
+  --color-line: #e2ded6;
+  --color-line-strong: #c9c4ba;
+
+  --color-danger: #b42318;
+  --color-danger-soft: #fdf0ee;
+
+  --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --text-display: clamp(2.5rem, 6vw, 4.25rem);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.02em;
+  --text-title: 1.5rem;
+  --text-title--line-height: 1.15;
+  --text-eyebrow: 0.8125rem;
+  --text-eyebrow--letter-spacing: 0.08em;
+
+  --radius-field: 12px;
+  --radius-card: 20px;
+  --radius-phone: 32px;
+
+  --shadow-phone: 0 24px 48px -24px rgb(26 26 26 / 0.35);
+
+  --container-shell: 70rem;
+}

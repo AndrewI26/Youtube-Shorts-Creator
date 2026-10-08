@@ -1,5 +1,5 @@
 import { screen, within } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { jsonResponse, mockFetch, renderApp } from './test/utils'
 
 describe('routing', () => {
@@ -70,5 +70,15 @@ describe('navigation', () => {
     await user.click(screen.getByRole('link', { name: 'History' }))
     await user.click(screen.getByRole('link', { name: 'Create' }))
     expect(screen.getByLabelText('Post title')).toHaveValue('')
+  })
+
+  it('scrolls to the top when the route changes', async () => {
+    mockFetch(() => Promise.resolve(jsonResponse([])))
+    const scrollTo = vi.fn()
+    vi.stubGlobal('scrollTo', scrollTo)
+    const { user } = renderApp(['/'])
+    scrollTo.mockClear()
+    await user.click(screen.getByRole('link', { name: 'History' }))
+    expect(scrollTo).toHaveBeenCalledWith(0, 0)
   })
 })

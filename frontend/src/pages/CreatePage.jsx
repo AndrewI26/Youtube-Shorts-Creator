@@ -7,6 +7,12 @@ import {
   formatDuration,
   validateForm,
 } from '../lib/api'
+import PageIntro from '../components/PageIntro'
+import { banner, button, card, cx, input, spinner } from '../components/ui'
+
+const fieldLabel = 'mb-2 block text-sm font-semibold'
+const phoneTitle = 'font-serif text-title'
+const phoneMeta = 'mb-2 text-[13px] text-ink-muted'
 
 export const EMPTY_FORM = {
   subreddit: '',
@@ -28,17 +34,17 @@ function formFromVideo(video) {
 
 function Field({ id, label, error, hint, children }) {
   return (
-    <div className={error ? 'field has-error' : 'field'}>
-      <label htmlFor={id} className="field-label">
+    <div className="mb-6">
+      <label htmlFor={id} className={fieldLabel}>
         {label}
       </label>
       {children}
       {error ? (
-        <p id={`${id}-error`} className="field-error">
+        <p id={`${id}-error`} className="mt-2 text-[13px] text-danger">
           {error}
         </p>
       ) : (
-        hint && <p className="field-hint">{hint}</p>
+        hint && <p className="mt-2 text-[13px] text-ink-muted">{hint}</p>
       )}
     </div>
   )
@@ -126,31 +132,40 @@ export default function CreatePage() {
 
   return (
     <>
-      <section className="intro">
-        <p className="eyebrow">Create a short</p>
-        <h1 className="display">
-          Turn a Reddit post into a video, <em>effortlessly.</em>
-        </h1>
-        <p className="lede">
-          Paste a post, pick some background gameplay, and we&rsquo;ll narrate it and add captions.
-        </p>
-      </section>
+      <PageIntro
+        label="Create a short"
+        title={
+          <>
+            Turn a Reddit post into a video, <em className="text-ink-muted">effortlessly.</em>
+          </>
+        }
+        description={
+          <>
+            Paste a post, pick some background gameplay, and we&rsquo;ll narrate it and add captions.
+          </>
+        }
+      />
 
-      <div className="create-grid">
-        <form className="card" onSubmit={handleSubmit} noValidate aria-label="Create a short">
+      <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <form className={card} onSubmit={handleSubmit} noValidate aria-label="Create a short">
           {message && (
-            <div className={status === 'error' ? 'banner error' : 'banner'} role="alert">
+            <div className={banner(status === 'error' ? 'error' : 'info')} role="alert">
               {message}
             </div>
           )}
 
-          <fieldset disabled={loading} className="fieldset">
+          <fieldset disabled={loading} className="m-0 min-w-0 border-0 p-0">
             <Field id="subreddit" label="Subreddit" error={fieldErrors.subreddit}>
-              <div className="input-affix">
-                <span aria-hidden="true">r/</span>
+              <div className="relative">
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-ink-muted"
+                >
+                  r/
+                </span>
                 <input
                   id="subreddit"
-                  className="input"
+                  className={cx(input, 'pl-9')}
                   placeholder="AmItheAsshole"
                   value={form.subreddit}
                   onChange={update('subreddit')}
@@ -164,7 +179,7 @@ export default function CreatePage() {
             <Field id="postTitle" label="Post title" error={fieldErrors.postTitle}>
               <input
                 id="postTitle"
-                className="input"
+                className={input}
                 placeholder="AITA for leaving my friend's party early?"
                 value={form.postTitle}
                 onChange={update('postTitle')}
@@ -185,7 +200,7 @@ export default function CreatePage() {
             >
               <textarea
                 id="content"
-                className="input textarea"
+                className={cx(input, 'min-h-40 resize-y leading-relaxed')}
                 rows={7}
                 placeholder="Paste the post here…"
                 value={form.content}
@@ -195,75 +210,115 @@ export default function CreatePage() {
               />
             </Field>
 
-            <div className={fieldErrors.videoChoice ? 'field has-error' : 'field'}>
-              <span className="field-label" id="videoChoice-label">
+            <div className="mb-6">
+              <span className={fieldLabel} id="videoChoice-label">
                 Background video
               </span>
-              <div className="choices" role="radiogroup" aria-labelledby="videoChoice-label">
+              <div
+                className="grid grid-cols-1 gap-3 sm:grid-cols-3"
+                role="radiogroup"
+                aria-labelledby="videoChoice-label"
+                aria-describedby={fieldErrors.videoChoice ? 'videoChoice-error' : undefined}
+              >
                 {VIDEO_CHOICES.map((choice) => (
-                  <label key={choice.value} className="choice">
+                  <label key={choice.value} className="group relative cursor-pointer">
                     <input
                       type="radio"
                       name="videoChoice"
                       value={choice.value}
                       checked={form.videoChoice === choice.value}
                       onChange={update('videoChoice')}
+                      className="peer absolute inset-0 m-0 cursor-pointer opacity-0"
                     />
-                    <span className="choice-body">
-                      <span className="choice-title">{choice.label}</span>
-                      <span className="choice-description">{choice.description}</span>
+                    <span
+                      className={cx(
+                        'flex h-full flex-col gap-0.5 rounded-field border border-line-strong px-4 py-3.5 transition',
+                        'group-hover:border-ink-muted peer-disabled:opacity-60',
+                        'peer-checked:border-ink peer-checked:bg-surface-muted peer-checked:inset-ring peer-checked:inset-ring-ink',
+                        'peer-focus-visible:ring-3 peer-focus-visible:ring-ink/15',
+                      )}
+                    >
+                      <span className="text-[15px] font-semibold">{choice.label}</span>
+                      <span className="text-[13px] text-ink-muted">{choice.description}</span>
                     </span>
                   </label>
                 ))}
               </div>
-              {fieldErrors.videoChoice && <p className="field-error">{fieldErrors.videoChoice}</p>}
+              {fieldErrors.videoChoice && (
+                <p id="videoChoice-error" className="mt-2 text-[13px] text-danger">
+                  {fieldErrors.videoChoice}
+                </p>
+              )}
             </div>
           </fieldset>
 
-          <div className="actions">
-            <button type="button" className="button ghost" onClick={reset} disabled={loading}>
+          <div className="mt-2 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button
+              type="button"
+              className={button({ variant: 'ghost', className: 'w-full sm:w-auto' })}
+              onClick={reset}
+              disabled={loading}
+            >
               Clear
             </button>
-            <button type="submit" className="button primary" disabled={loading}>
+            <button
+              type="submit"
+              className={button({ className: 'w-full sm:w-auto' })}
+              disabled={loading}
+            >
               {loading ? 'Generating…' : 'Generate video'}
             </button>
           </div>
         </form>
 
-        <aside className="preview" aria-label="Preview" aria-live="polite">
-          <div className="phone">
+        <aside
+          className="mx-auto w-full max-w-80 lg:sticky lg:top-24 lg:max-w-none"
+          aria-label="Preview"
+          aria-live="polite"
+        >
+          <div className="aspect-9/16 w-full overflow-hidden rounded-phone border-8 border-ink bg-ink shadow-phone">
             {status === 'done' && videoUrl ? (
               <video
-                className="phone-video"
+                className="block size-full rounded-3xl bg-black object-cover"
                 src={videoUrl}
                 controls
                 autoPlay
                 playsInline
                 data-testid="result-video"
               />
-            ) : loading ? (
-              <div className="phone-state">
-                <div className="spinner" role="progressbar" aria-label="Generating video" />
-                <p className="phone-title">Generating your short</p>
-                <p className="phone-meta">{formatDuration(elapsed)} elapsed · usually under a minute</p>
-                <button type="button" className="button ghost small" onClick={cancel}>
-                  Cancel
-                </button>
-              </div>
             ) : (
-              <div className="phone-state">
-                <p className="phone-title">Your short will appear here</p>
-                <p className="phone-meta">Vertical video · captions included</p>
+              <div className="flex size-full flex-col items-center justify-center gap-2 rounded-3xl bg-surface-muted p-6 text-center">
+                {loading ? (
+                  <>
+                    <div
+                      className={cx(spinner, 'mb-3')}
+                      role="progressbar"
+                      aria-label="Generating video"
+                    />
+                    <p className={phoneTitle}>Generating your short</p>
+                    <p className={phoneMeta}>
+                      {formatDuration(elapsed)} elapsed · usually under a minute
+                    </p>
+                    <button type="button" className={button({ variant: 'ghost', size: 'sm' })} onClick={cancel}>
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <p className={phoneTitle}>Your short will appear here</p>
+                    <p className={phoneMeta}>Vertical video · captions included</p>
+                  </>
+                )}
               </div>
             )}
           </div>
 
           {status === 'done' && videoUrl && (
-            <div className="preview-actions">
-              <a className="button primary" href={videoUrl} download="short.mp4">
+            <div className="mt-5 flex justify-center gap-3">
+              <a className={button()} href={videoUrl} download="short.mp4">
                 Download
               </a>
-              <button type="button" className="button ghost" onClick={reset}>
+              <button type="button" className={button({ variant: 'ghost' })} onClick={reset}>
                 Make another
               </button>
             </div>

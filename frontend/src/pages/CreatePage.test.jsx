@@ -252,7 +252,7 @@ describe('errors', () => {
 
     expect(await screen.findByRole('alert')).toHaveTextContent(/need fixing/)
     expect(screen.getByText('This is too long')).toBeInTheDocument()
-    expect(screen.getByText('Choose a background video', { selector: '.field-error' })).toBeInTheDocument()
+    expect(screen.getByRole('radiogroup')).toHaveAccessibleDescription('Choose a background video')
     expect(screen.getByLabelText('Subreddit')).toHaveAttribute('aria-invalid', 'true')
   })
 

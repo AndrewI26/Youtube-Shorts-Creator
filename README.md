@@ -12,6 +12,23 @@ Once the information is inputed, a the request is sent to the backend, which cre
 https://github.com/user-attachments/assets/7a6e3186-0be9-435b-a855-894af0dffcd8
 
 
+## Frontend (React + Vite)
+
+A single-page app built with React Router and managed with [Bun](https://bun.sh).
+
+```bash
+cd frontend
+bun install
+bun run dev      # http://localhost:3000
+```
+
+| Route | Page |
+| --- | --- |
+| `/` | Create a short from a Reddit post |
+| `/history` | Search past requests and load one back into the editor |
+
+The app talks to `http://127.0.0.1:8000` by default. To point it at another backend, set `VITE_API_URL` (e.g. in `frontend/.env.local`). Other scripts: `bun run build`, `bun run preview` and `bun run test` (Vitest + Testing Library).
+
 ## Backend (FastAPI)
 
 ```bash

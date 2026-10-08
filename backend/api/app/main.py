@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import Settings
-from .database import Base, make_engine, make_session_factory
+from .database import make_engine, make_session_factory
 from .routers import shorts
 
 
@@ -14,7 +14,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        Base.metadata.create_all(engine)
+        # The schema is managed by Alembic: run `uv run alembic upgrade head`.
         settings.media_dir.mkdir(parents=True, exist_ok=True)
         yield
         engine.dispose()

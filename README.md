@@ -35,11 +35,21 @@ The app talks to `http://127.0.0.1:8000` by default. To change that, copy `front
 
 Managed with [uv](https://docs.astral.sh/uv/); dependencies are in `pyproject.toml` and pinned in `uv.lock`.
 
+Data is stored in PostgreSQL through SQLAlchemy, and the schema is managed with Alembic. A local Postgres 17 runs in Docker on port 5433, so it won't clash with other Postgres instances on 5432.
+
 ```bash
 cd backend/api
-cp .env.example .env          # optional, then edit
+cp .env.example .env              # optional, then edit
+docker compose up -d              # start Postgres
 uv sync
+uv run alembic upgrade head       # create or upgrade the schema
 uv run --env-file .env uvicorn app.main:app --reload --port 8000
+```
+
+After changing a model, generate a migration and review it before committing:
+
+```bash
+uv run alembic revision --autogenerate -m "describe the change"
 ```
 
 Put the background clips (`SubwaySurfers.mov`, `MinecraftParkor.mov`, `MobileGamplay.mov`) in `backend/api/assets/backgrounds/`. Captions are rendered with ImageMagick, and `ffmpeg` must be installed.
@@ -52,12 +62,17 @@ Put the background clips (`SubwaySurfers.mov`, `MinecraftParkor.mov`, `MobileGam
 
 Interactive docs are served at `/docs`.
 
-Settings are read from environment variables (see `backend/api/.env.example`): `DATABASE_URL`, `MEDIA_DIR`, `BACKGROUNDS_DIR`, `WHISPER_MODEL` (default `small`), `CAPTION_FONT` (an ImageMagick font name or a font file path, e.g. `/System/Library/Fonts/Supplemental/Futura.ttc`), `CORS_ORIGINS` (comma-separated).
+Settings are read from environment variables (see `backend/api/.env.example`): `DATABASE_URL` (Postgres), `MEDIA_DIR`, `BACKGROUNDS_DIR`, `WHISPER_MODEL` (default `small`), `CAPTION_FONT` (an ImageMagick font name or a font file path, e.g. `/System/Library/Fonts/Supplemental/Futura.ttc`), `CORS_ORIGINS` (comma-separated).
 
 ### Tests
 
+The tests run against a real Postgres. Each run creates its own temporary database (migrated with Alembic) and drops it at the end, so your dev data is never touched. Start Postgres first:
+
 ```bash
+docker compose up -d
 uv run pytest --cov=app
 ```
 
-The tests stub out gTTS, ffmpeg, faster-whisper and moviepy, so they run in under a second without network access or the heavy dependencies.
+Set `TEST_DATABASE_URL` to use a different Postgres server.
+
+The video pipeline tests stub out gTTS, ffmpeg, faster-whisper and moviepy, so they need neither network access nor the heavy dependencies.

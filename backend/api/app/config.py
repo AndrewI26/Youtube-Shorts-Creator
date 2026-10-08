@@ -5,13 +5,24 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+DEFAULT_DATABASE_URL = "postgresql+psycopg://shorts:shorts@localhost:5433/shorts"
+
+
+def normalize_database_url(url: str) -> str:
+    """Use the psycopg 3 driver for bare postgres:// / postgresql:// URLs."""
+    for prefix in ("postgres://", "postgresql://"):
+        if url.startswith(prefix):
+            return "postgresql+psycopg://" + url[len(prefix):]
+    return url
+
+
 def _split_csv(value: str) -> list[str]:
     return [item.strip() for item in value.split(",") if item.strip()]
 
 
 @dataclass(frozen=True)
 class Settings:
-    database_url: str = f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
+    database_url: str = DEFAULT_DATABASE_URL
     # Per-request working directories (narration audio, rendered short) live here.
     media_dir: Path = BASE_DIR / "media"
     # Folder holding SubwaySurfers.mov, MinecraftParkor.mov and MobileGamplay.mov.
@@ -25,7 +36,7 @@ class Settings:
     def from_env(cls) -> "Settings":
         defaults = cls()
         return cls(
-            database_url=os.getenv("DATABASE_URL", defaults.database_url),
+            database_url=normalize_database_url(os.getenv("DATABASE_URL", defaults.database_url)),
             media_dir=Path(os.getenv("MEDIA_DIR", defaults.media_dir)),
             backgrounds_dir=Path(os.getenv("BACKGROUNDS_DIR", defaults.backgrounds_dir)),
             whisper_model=os.getenv("WHISPER_MODEL", defaults.whisper_model),

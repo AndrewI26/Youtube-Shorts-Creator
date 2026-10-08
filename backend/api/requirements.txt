@@ -1,0 +1,12 @@
+fastapi>=0.115,<1
+uvicorn[standard]>=0.30
+sqlalchemy>=2.0,<3
+python-multipart>=0.0.9
+
+# Video pipeline
+gTTS>=2.5
+ffmpeg-python==0.2.0
+faster-whisper>=1.1
+# faster-whisper passes a kwarg PyAV 18+ removed
+av<18
+moviepy>=1.0.3,<2

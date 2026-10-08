@@ -1,0 +1,23 @@
+# Local Postgres for development and tests: docker compose up -d
+name: shorts-creator
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: shorts
+      POSTGRES_PASSWORD: shorts
+      POSTGRES_DB: shorts
+    ports:
+      # 5433 on the host so it doesn't clash with other local Postgres instances.
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shorts -d shorts"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+volumes:
+  pgdata:
